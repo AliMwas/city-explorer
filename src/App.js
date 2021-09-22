@@ -4,12 +4,14 @@ import Card from 'react-bootstrap/Card';
 
 import ListGroup from 'react-bootstrap/ListGroup';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Weather from './componant/weather'
 class App extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
       locationResult: {},
+      weatherResult: {},
       searchQuery: '',
       showLocInfo: false
     }
@@ -44,8 +46,17 @@ class App extends React.Component {
   <Card.Img variant="top" src={`https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_LOCATIONIQ_KEY}&center=${this.state.locationResult.lat},${this.state.locationResult.lon}&zoom=12`} alt="city map"/>
 </Card>
 
+<Card style={{ width: '25rem' }}>
 
+{this.state.weatherResult.map((weather,value) => 
+{
+          return (
 
+            <Weather key ={value} weather={weather}
+            />
+          )
+        })}
+        </Card>
   </>
         }
 
@@ -75,10 +86,23 @@ class App extends React.Component {
       showLocInfo: true
     })
 
-
+  
   }
 
+  weather = async (searchQuery) => {
+   // let cityName = e.target.city.value;
+    
+    let url = `${process.env.REACT_APP_SERVER_LINK}/weather?city=${searchQuery}`;
+    let wResult = await axios.get(url);
 
+
+    this.setState({
+
+
+      weatherResult: wResult.data[0]
+    })
+    this.weather(this.state.searchQuery)
+  }
   
 }
 
